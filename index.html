@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Processo creativo video OE</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+@page{size:1280px 720px;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#1a1a1a}
+body{font-family:var(--oe-font-sans);font-weight:300;color:var(--oe-fg);font-size:17px;line-height:1.45;
+  font-variant-ligatures:no-common-ligatures;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+b,strong{font-weight:600}
+
+/* deck */
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.slide{width:1280px;height:720px;flex:none;background:#fff;position:absolute;padding:56px 72px 64px;overflow:hidden;
+  display:none;flex-direction:column;transform-origin:center center}
+.slide.on{display:flex}
+.nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;z-index:10;
+  font-family:var(--oe-font-mono);font-size:12px;letter-spacing:.1em;color:#fff}
+.nav button{background:var(--oe-bluette-700);color:#fff;border:0;width:40px;height:32px;font:inherit;font-size:16px;cursor:pointer}
+.nav button:hover{background:var(--oe-bluette-900)}
+.nav span{min-width:64px;text-align:center}
+
+@media print{
+  html,body{background:#fff}
+  .deck{position:static;display:block}
+  .slide{display:flex!important;position:relative;transform:none!important;page-break-after:always}
+  .nav{display:none}
+}
+
+/* type */
+.chip{display:inline-block;align-self:flex-start;background:var(--oe-lime);color:#000;font-family:var(--oe-font-mono);font-weight:600;
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;margin-bottom:20px}
+.slide h1{font-family:var(--oe-font-serif);font-weight:400;font-size:68px;line-height:1.04;letter-spacing:-.01em;color:#fff}
+.slide h2{font-family:var(--oe-font-serif);font-weight:400;font-size:40px;line-height:1.1;margin-bottom:28px;color:#000}
+.slide h3{font-family:var(--oe-font-serif);font-weight:400;font-size:22px;line-height:1.2;margin-bottom:10px;color:#000}
+.slide p{color:var(--oe-fg-soft);font-size:17px}
+.lead{font-size:19px!important;max-width:820px;margin-top:-12px;margin-bottom:28px}
+.mono{font-family:var(--oe-font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.foot{position:absolute;left:72px;right:72px;bottom:24px;display:flex;justify-content:space-between;
+  font-family:var(--oe-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--oe-fg-muted)}
+ul{list-style:none}
+ul li{padding-left:20px;position:relative;margin-bottom:9px;font-size:17px;color:var(--oe-fg)}
+ul li::before{content:"";position:absolute;left:0;top:.7em;width:10px;height:1px;background:var(--oe-accent)}
+code{font-family:var(--oe-font-mono);font-size:.82em;background:var(--oe-bg-elev);padding:1px 5px}
+
+/* dark slides */
+.dark{background:var(--oe-bg-accent)}
+.dark p,.dark li{color:rgba(255,255,255,.85)}
+.dark h2,.dark h3{color:#fff}
+.dark .foot{color:rgba(255,255,255,.6)}
+.cover{justify-content:space-between}
+.cover .logo{width:200px}
+.cover .lead{color:rgba(255,255,255,.85)!important;margin-top:22px}
+.cmeta{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid rgba(255,255,255,.4)}
+.cmeta div{padding:16px 18px;border-right:1px solid rgba(255,255,255,.4)}
+.cmeta div:last-child{border-right:0}
+.cmeta .mono{color:rgba(255,255,255,.74);margin-bottom:6px}
+.cmeta p{color:#fff;font-size:16px}
+
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #000;border-left:1px solid #000}
+.flow div{border-right:1px solid #000;border-bottom:1px solid #000;padding:18px 18px 20px;min-height:200px}
+.flow .n{font-family:var(--oe-font-mono);font-weight:700;font-size:34px;color:var(--oe-accent);line-height:1;margin-bottom:12px}
+.flow h3{font-size:21px}
+.flow p{font-size:15px}
+.flow .hl{background:var(--oe-bg-dark)}
+.flow .hl .n{color:var(--oe-lime)}
+.flow .hl h3{color:#fff}
+.flow .hl p{color:rgba(255,255,255,.8)}
+
+/* big number step */
+.slide p.stepnum{font-family:var(--oe-font-mono);font-weight:700;font-size:120px;line-height:.9;color:var(--oe-accent);letter-spacing:-.04em}
+.steptop{display:flex;gap:40px;align-items:flex-end;margin-bottom:34px}
+.steptop h2{margin-bottom:6px}
+.io{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid #000}
+.io > div{padding:18px 24px 0 0}
+.io .mono{color:var(--oe-accent);font-weight:600;margin-bottom:12px;font-size:12px}
+.note{background:var(--oe-bg-tint);padding:16px 20px;margin-top:auto}
+.note p{color:var(--oe-fg);font-size:16px}
+.note .mono{color:var(--oe-accent);font-weight:600;margin-right:10px}
+
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{font-family:var(--oe-font-mono);font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;text-align:left;
+  border-bottom:1px solid #000;padding:8px 14px 8px 0;background:#fff;color:#000}
+td{border-bottom:1px solid var(--oe-stroke-soft);padding:9px 14px 9px 0;vertical-align:top;color:var(--oe-fg)}
+td:first-child{font-weight:600}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.split{display:grid;grid-template-columns:560px 1fr;gap:48px;align-items:start}
+figure img{width:100%;display:block;border:1px solid var(--oe-stroke-soft)}
+figcaption{font-family:var(--oe-font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--oe-fg-muted);margin-top:8px}
+ol.an{list-style:none;counter-reset:a}
+ol.an li{counter-increment:a;padding:9px 0 9px 32px;border-bottom:1px solid var(--oe-stroke-soft);position:relative;font-size:16px}
+ol.an li::before{content:counter(a);position:absolute;left:0;top:9px;font-family:var(--oe-font-mono);font-weight:700;color:var(--oe-accent)}
+.slide p.big{font-family:var(--oe-font-mono);font-weight:700;font-size:96px;line-height:1;letter-spacing:-.035em;color:var(--oe-lime)}
+.slide .stat p.mono{color:rgba(255,255,255,.74);margin-bottom:8px}
+.check li{padding-left:30px;margin-bottom:11px}
+.check li::before{width:14px;height:14px;top:.25em;background:none;border:1px solid var(--oe-accent)}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:auto}
+.strip img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 01 -->
+<section class="slide dark cover">
+  <img class="logo" src="img/logo-white.svg" alt="OpenEconomics">
+  <div>
+    <span class="chip">Processo creativo · uso interno</span>
+    <h1>Come facciamo i video<br>OpenEconomics</h1>
+    <p class="lead">Dal brief al file finale, passando per lo storyboard HTML. Il metodo usato per il video dell'Audiovisivo e per il video di Rieti.</p>
+  </div>
+  <div class="cmeta">
+    <div><p class="mono">Caso 1</p><p>Audiovisual Sector Impact Study · per APA · 1:14 · inglese</p></div>
+    <div><p class="mono">Caso 2</p><p>Analisi territoriale Rieti · con ANCI · 3:16 · italiano</p></div>
+    <div><p class="mono">Aggiornato</p><p>29 ottobre 2026 · Alessio Granella</p></div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="slide">
+  <span class="chip">Il processo in sintesi</span>
+  <h2>Otto passi, sempre in quest'ordine</h2>
+  <div class="flow">
+    <div><p class="n">01</p><h3>Brief e materiali</h3><p>Script, sceneggiatura, dati. Si segnalano buchi e incongruenze.</p></div>
+    <div><p class="n">02</p><h3>Storyboard HTML</h3><p>Una scheda per scena: frame 16:9, testi, voce, regia.</p></div>
+    <div><p class="n">03</p><h3>Immagini fisse</h3><p>Un fotogramma per scena: AI, foto vera o grafica dati in codice.</p></div>
+    <div class="hl"><p class="n">04</p><h3>Approvazione</h3><p>Feedback scena per scena sulla pagina. Si rifà finché regge.</p></div>
+    <div><p class="n">05</p><h3>Animazione</h3><p>L'immagine approvata diventa il primo frame del clip.</p></div>
+    <div><p class="n">06</p><h3>Testi e dati</h3><p>Tipografia del design system impressa sopra il clip.</p></div>
+    <div><p class="n">07</p><h3>Voce e musica</h3><p>Voiceover per battuta, poi tappeto musicale con ducking.</p></div>
+    <div class="hl"><p class="n">08</p><h3>Montaggio</h3><p>Python + ffmpeg. MP4 1080p, −14 LUFS.</p></div>
+  </div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>02</span></div>
+</section>
+
+<!-- 03 -->
+<section class="slide">
+  <span class="chip">Regole fisse</span>
+  <h2>Valgono per ogni video</h2>
+  <div class="g2">
+    <div>
+      <h3>Forma</h3>
+      <ul>
+        <li>Orizzontale 16:9, 1920×1080.</li>
+        <li>Caratteri, colori e trattamento foto solo dal design system OE.</li>
+        <li>Fondo Bluette <code>#4400B3</code>, numeri Lime <code>#B9FF69</code>: le uniche due tinte.</li>
+        <li>Dominante Bluette chiesta a ogni immagine, così le scene stanno insieme.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Metodo</h3>
+      <ul>
+        <li>Luoghi reali: foto vere (Adobe Stock, Wikimedia) prima dell'AI.</li>
+        <li>Immagini AI solo dopo conferma di Alessio.</li>
+        <li>Ogni dato a schermo ha una fonte; le incongruenze si segnalano, non si colmano.</li>
+        <li>Clip generati già alla durata finale, non tagliati dopo.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>03</span></div>
+</section>
+
+<!-- 04 -->
+<section class="slide">
+  <div class="steptop"><p class="stepnum">01</p><div><span class="chip">Passo</span><h2>Brief e materiali di partenza</h2></div></div>
+  <div class="io">
+    <div><p class="mono">Entra</p><ul><li>Script e storyboard in Word (Audiovisivo)</li><li>Sceneggiatura PPTX con note di regia (Rieti)</li><li>Dati: studio o minisito dell'analisi</li></ul></div>
+    <div><p class="mono">Si fa</p><ul><li>Lettura scena per scena</li><li>Elenco segnaposto e prompt mancanti</li><li>Verifica dei numeri contro la fonte</li></ul></div>
+    <div><p class="mono">Esce</p><ul><li>Lista dei problemi da chiudere</li><li>Elenco scene con durata e battuta</li></ul></div>
+  </div>
+  <div class="note"><p><span class="mono">Esempi</span>Audiovisivo: quattro beat con «scena molto bella», un aereo rimasto dal video Difesa, formato passato da 9:16 a 16:9. Rieti: export 2025 confrontato con dati 2024 su basi diverse, voce e mappe in ordine inverso.</p></div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>04</span></div>
+</section>
+
+<!-- 05 -->
+<section class="slide">
+  <div class="steptop"><p class="stepnum">02</p><div><span class="chip">Passo</span><h2>Storyboard HTML</h2></div></div>
+  <div class="io">
+    <div><p class="mono">Entra</p><ul><li>Elenco scene del passo 01</li><li>Token e font del design system</li></ul></div>
+    <div><p class="mono">Si fa</p><ul><li>Una pagina con tutte le scene animate</li><li>Pubblicazione su GitHub Pages, <code>noindex</code></li></ul></div>
+    <div><p class="mono">Esce</p><ul><li>Link da girare per il feedback</li><li>In Rieti: la sorgente stessa del video</li></ul></div>
+  </div>
+  <div class="note"><p><span class="mono">Perché</span>Al posto del Word con le tabelle: chi commenta vede la scena animata e scrive sulla scena giusta.</p></div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>05</span></div>
+</section>
+
+<!-- 06 -->
+<section class="slide">
+  <div class="steptop"><p class="stepnum">03</p><div><span class="chip">Passo</span><h2>Immagini fisse</h2></div></div>
+  <div class="io">
+    <div><p class="mono">Entra</p><ul><li>Prompt per ogni scena</li><li>Regia: soggetto, luce, movimento</li></ul></div>
+    <div><p class="mono">Si fa</p><ul><li>AI: Magnific dal connettore</li><li>Foto vere per i luoghi reali</li><li>Mappe, grafici e card in codice dai dati veri</li></ul></div>
+    <div><p class="mono">Esce</p><ul><li>Un fotogramma 16:9 per scena</li><li>Versioni scartate conservate</li></ul></div>
+  </div>
+  <div class="note"><p><span class="mono">Prompt tipo</span>Soggetto caldo in primo piano, fondo sfocato viola e indaco, movimento lento (push-in, carrello). Niente grana o look vintage.</p></div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>06</span></div>
+</section>
+
+<!-- 07 -->
+<section class="slide">
+  <span class="chip">Passi 04–08</span>
+  <h2>Dalla scena approvata al file finale</h2>
+  <table>
+    <thead><tr><th style="width:170px">Passo</th><th>Cosa si fa</th><th style="width:300px">Strumento</th><th style="width:200px">Uscita</th></tr></thead>
+    <tbody>
+      <tr><td>04 Approvazione</td><td>Feedback sulla pagina, badge di stato per scena. Quasi ogni scena arriva alla terza versione.</td><td>Storyboard online, PDF di feedback</td><td>Scene approvate</td></tr>
+      <tr><td>05 Animazione</td><td>L'immagine approvata è il primo frame. Durata decisa prima.</td><td>Seedance 2.0 Pro / 2.5 via Magnific</td><td><code>assets/clips/</code></td></tr>
+      <tr><td>06 Testi e dati</td><td>Pretitolo, numero e frase impressi con entrata animata e contatore.</td><td><code>burn_titles.py</code> · <code>render_scenes.cjs</code></td><td>Clip titolati</td></tr>
+      <tr><td>07 Voce e musica</td><td>Una battuta per scena, poi la musica sotto con ducking.</td><td>ElevenLabs via Magnific</td><td><code>assets/audio/</code></td></tr>
+      <tr><td>08 Montaggio</td><td>Segmenti in sequenza, card di chiusura, mix e normalizzazione.</td><td><code>assemble_video.py</code></td><td><code>assets/final/</code></td></tr>
+    </tbody>
+  </table>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>07</span></div>
+</section>
+
+<!-- 08 -->
+<section class="slide dark">
+  <span class="chip">Testi e dati</span>
+  <h2>I numeri non li scrive l'AI</h2>
+  <div class="g2" style="margin-top:20px">
+    <div class="stat"><p class="mono">Un'immagine fissa</p><p class="big">75</p><p>crediti</p></div>
+    <div class="stat"><p class="mono">Il clip che ne deriva</p><p class="big">6.300</p><p>crediti</p></div>
+  </div>
+  <ul style="margin-top:48px">
+    <li>Cambiare una cifra è una riga di codice, non una rigenerazione.</li>
+    <li>La tipografia resta identica in tutte le scene.</li>
+  </ul>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>08</span></div>
+</section>
+
+<!-- 09 -->
+<section class="slide">
+  <span class="chip">Testi e audio</span>
+  <h2>Misure di riferimento</h2>
+  <div class="g2" style="grid-template-columns:1.5fr 1fr">
+    <div>
+      <h3>Gerarchia dei testi a schermo</h3>
+      <table>
+        <thead><tr><th>Livello</th><th>Carattere</th><th>Misura</th><th>Colore</th></tr></thead>
+        <tbody>
+          <tr><td>Pretitolo</td><td>Atkinson Mono 600, maiuscolo</td><td>1,8% larghezza</td><td>Bianco 74%</td></tr>
+          <tr><td>Numero</td><td>Atkinson Mono 700</td><td>11% (9 · 16)</td><td>Lime</td></tr>
+          <tr><td>Frase</td><td>Hedvig Letters Serif</td><td>4,3% (domande 4,9%)</td><td>Bianco</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:14px">Blocco in basso a sinistra, margine 5%, larghezza massima 55%. Ombra neutra sfumata, mai velature colorate.</p>
+    </div>
+    <div>
+      <h3>Audio</h3>
+      <ul>
+        <li>Loudness finale −14 LUFS, picco −1,5 dBTP.</li>
+        <li>La musica scende quando entra la voce e risale nelle pause.</li>
+        <li>Audiovisivo: musica −15,8 dB sotto la voce, −21,3 dB al beat 02.</li>
+        <li>Rieti: pause interne della voce accorciate a 0,35 s.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>09</span></div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <span class="chip">Lo storyboard HTML</span>
+  <h2>Una pagina sola, una scheda per scena</h2>
+  <div class="split">
+    <figure><img src="img/crop-rieti-top.jpg" style="height:440px;object-fit:cover;object-position:top"><figcaption>Storyboard Rieti · testata e video montato</figcaption></figure>
+    <ol class="an">
+      <li><b>Testata</b>: titolo, fonte, durata, formato, lingua, voce, tono.</li>
+      <li><b>Video montato</b> in alto, appena esiste.</li>
+      <li><b>Barra di vista</b>: anima i frame, title safe 16:9, frame grandi.</li>
+      <li><b>Schede scena</b>: frame con timecode, on-screen, voiceover, regia o prompt, nota.</li>
+      <li><b>Badge di stato</b>: aggiornata, nuova, da verificare.</li>
+      <li><b>Feedback</b>: cosa è applicato e cosa resta aperto.</li>
+    </ol>
+  </div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>10</span></div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <span class="chip">Lo storyboard HTML</span>
+  <h2>La scheda di una scena</h2>
+  <figure><img src="img/crop-rieti-schede.jpg" style="height:470px;object-fit:cover;object-position:top"><figcaption>Rieti · scene 01 e 02 · frame, badge, on-screen, voiceover, regia, nota</figcaption></figure>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>11</span></div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <span class="chip">Lo storyboard HTML</span>
+  <h2>Come si pubblica</h2>
+  <div class="g2">
+    <ul>
+      <li>Repo pubblico su GitHub, pagina esclusa dai motori di ricerca (<code>noindex</code> + <code>robots.txt</code>): la vede solo chi ha il link.</li>
+      <li>Ripubblicazione dopo una modifica: <code>./deploy.sh "messaggio"</code>.</li>
+      <li>Repo: <code>oe-storyboard-audiovisivo</code> e <code>oe-storyboard-rieti</code>.</li>
+      <li>La pagina si aggiorna a ogni giro di feedback e alla fine ospita il video montato.</li>
+    </ul>
+    <figure><img src="img/crop-av-top.jpg" style="height:400px;object-fit:cover;object-position:top"><figcaption>Storyboard Audiovisivo · testata e video montato</figcaption></figure>
+  </div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>12</span></div>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <span class="chip">Dallo storyboard al video</span>
+  <h2>Due modi di usare la stessa pagina</h2>
+  <div class="g2">
+    <div>
+      <p class="mono" style="color:var(--oe-accent);font-weight:600;margin-bottom:12px">Audiovisivo · pagina come riferimento</p>
+      <figure style="margin-bottom:18px"><img src="img/crop-av-schede.jpg" style="height:200px;object-fit:cover;object-position:top"></figure>
+      <ul>
+        <li>Lo storyboard mostra i clip in loop con i testi sovrapposti.</li>
+        <li>Il video si costruisce fuori: clip AI → <code>burn_titles.py</code> → <code>assemble_video.py</code>.</li>
+      </ul>
+    </div>
+    <div>
+      <p class="mono" style="color:var(--oe-accent);font-weight:600;margin-bottom:12px">Rieti · pagina come sorgente</p>
+      <figure style="margin-bottom:18px"><img src="img/contact.jpg" style="height:200px;object-fit:cover"></figure>
+      <ul>
+        <li>Mappe, grafici e card sono animazioni della pagina, costruite sui dati del minisito.</li>
+        <li>Chrome headless registra la pagina fotogramma per fotogramma, 25 fps.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>13</span></div>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <span class="chip">Dallo storyboard al video</span>
+  <h2>Rifare il video di Rieti</h2>
+  <table>
+    <thead><tr><th style="width:40px">#</th><th style="width:520px">Comando</th><th>Cosa fa</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>build_timeline.json</code></td><td>Durata di ogni scena, agganciata alla battuta di voce</td></tr>
+      <tr><td>2</td><td><code>node render_scenes.cjs build_timeline.json [scene]</code></td><td>Rende le scene dalla pagina (serve puppeteer-core e Google Chrome)</td></tr>
+      <tr><td>3</td><td><code>python3 assemble_video.py</code></td><td>Sovrappone i livelli ai clip, aggiunge voce e musica, esporta l'MP4</td></tr>
+    </tbody>
+  </table>
+  <ul style="margin-top:32px">
+    <li>Le scene con un video sotto escono come livello trasparente (ProRes 4444).</li>
+    <li>Una correzione alla pagina passa nel video rilanciando i passi 2 e 3.</li>
+  </ul>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>14</span></div>
+</section>
+
+<!-- 15 -->
+<section class="slide">
+  <span class="chip">I due casi a confronto</span>
+  <h2>Audiovisivo e Rieti</h2>
+  <table style="font-size:14px">
+    <thead><tr><th style="width:150px"></th><th>Audiovisivo</th><th>Rieti</th></tr></thead>
+    <tbody>
+      <tr><td>Fonte testi</td><td>Script e storyboard in Word, 9 beat</td><td>Sceneggiatura v2 in PPTX, note di regia nelle note</td></tr>
+      <tr><td>Fonte dati</td><td>Numeri chiave dello studio</td><td>Minisito dell'analisi (ISTAT, Camera di Commercio, Excelsior)</td></tr>
+      <tr><td>Scene</td><td>9 (8 generate + chiusura in codice)</td><td>16 (motion graphic, dati, clip AI, stock, screencast)</td></tr>
+      <tr><td>Immagini</td><td>Tutte AI, Magnific</td><td>Drone e ponte Adobe Stock, 3 scene AI, mappe e grafici in codice</td></tr>
+      <tr><td>Testi a schermo</td><td><code>burn_titles.py</code> (PIL + ffmpeg)</td><td>Renderizzati dalla pagina HTML</td></tr>
+      <tr><td>Voce</td><td>Charles Haversham, inglese britannico</td><td>Marco Esposito, italiano</td></tr>
+      <tr><td>Feedback</td><td>Iterazioni su ogni scena, montaggio da 1:55 a 1:14</td><td>PDF del 14 ottobre: logo ANCI, monogramma OE, 4 scene nuove</td></tr>
+      <tr><td>File finale</td><td>1:14 · 1920×1080 · 24 fps · −13,9 LUFS</td><td>3:16 · 1920×1080 · 25 fps · −14 LUFS</td></tr>
+    </tbody>
+  </table>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>15</span></div>
+</section>
+
+<!-- 16 -->
+<section class="slide">
+  <span class="chip">Strumenti</span>
+  <h2>Previsto nel brief e usato davvero</h2>
+  <table>
+    <thead><tr><th style="width:260px">Fase</th><th>Previsto</th><th>Usato</th></tr></thead>
+    <tbody>
+      <tr><td>Immagini e video</td><td>Freepik</td><td>Magnific via connettore</td></tr>
+      <tr><td>Voce</td><td>ElevenLabs</td><td>ElevenLabs via Magnific</td></tr>
+      <tr><td>Musica</td><td>Non prevista</td><td>Generata</td></tr>
+      <tr><td>Testi e montaggio</td><td>CapCut</td><td>Python + ffmpeg</td></tr>
+      <tr><td>Condivisione</td><td>Non prevista</td><td>Storyboard HTML su GitHub Pages</td></tr>
+    </tbody>
+  </table>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>16</span></div>
+</section>
+
+<!-- 17 -->
+<section class="slide">
+  <span class="chip">Per il prossimo video</span>
+  <h2>Checklist e cartelle</h2>
+  <div class="g2" style="grid-template-columns:1.1fr 1fr">
+    <ul class="check">
+      <li>Brief letto scena per scena, dati dubbi segnalati</li>
+      <li>Fonte di ogni numero annotata</li>
+      <li>Storyboard HTML pubblicato con <code>noindex</code></li>
+      <li>Conferma prima di generare immagini AI</li>
+      <li>Frame fissi approvati prima dei clip</li>
+      <li>Durata di ogni clip decisa prima di generarlo</li>
+      <li>Voce scelta su campioni, battute separate</li>
+      <li>Audio a −14 LUFS, storyboard e README aggiornati</li>
+    </ul>
+    <table style="font-size:14px">
+      <tbody>
+        <tr><td><code>Materiale/</code></td><td>Brief, sceneggiatura, feedback</td></tr>
+        <tr><td><code>Storyboard-*.html</code></td><td>La pagina</td></tr>
+        <tr><td><code>assets/frames/</code></td><td>Fotogrammi fissi</td></tr>
+        <tr><td><code>assets/clips/</code></td><td>Clip senza testo</td></tr>
+        <tr><td><code>assets/audio/</code></td><td>Voce e musica</td></tr>
+        <tr><td><code>assets/final/</code></td><td>Video montato</td></tr>
+        <tr><td><code>*.py</code> · <code>*.cjs</code></td><td>Render e montaggio</td></tr>
+        <tr><td><code>deploy.sh</code> · <code>README.md</code></td><td>Pubblicazione e stato</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>17</span></div>
+</section>
+
+<!-- 18 -->
+<section class="slide dark">
+  <span class="chip">Riferimenti</span>
+  <h2>I progetti da cui ripartire</h2>
+  <ul>
+    <li><code style="background:rgba(255,255,255,.12)">OpenEconomics/progetti/Video Audiovisivo/</code></li>
+    <li><code style="background:rgba(255,255,255,.12)">OpenEconomics/progetti/Video Rieti/</code></li>
+  </ul>
+  <div class="strip">
+    <img src="img/01-camera.jpg" alt="">
+    <img src="img/rieti-23.jpg" alt="">
+    <img src="img/rieti-48.jpg" alt="">
+    <img src="img/07-audience.jpg" alt="">
+  </div>
+  <div class="foot"><span>OpenEconomics · Processo video</span><span>18</span></div>
+</section>
+
+</div>
+<div class="nav"><button id="prev" aria-label="Indietro">←</button><span id="count"></span><button id="next" aria-label="Avanti">→</button></div>
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=Math.max(0,Math.min(slides.length-1,(parseInt(location.hash.slice(1))||1)-1));
+  const count=document.getElementById('count');
+  function fit(){const s=Math.min(innerWidth/1280,(innerHeight-56)/720);slides.forEach(el=>el.style.transform='scale('+s+') translateY(-20px)');}
+  function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((el,k)=>el.classList.toggle('on',k===i));
+    count.textContent=String(i+1).padStart(2,'0')+' / '+slides.length;history.replaceState(null,'','#'+(i+1));}
+  document.getElementById('prev').onclick=()=>show(i-1);
+  document.getElementById('next').onclick=()=>show(i+1);
+  addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+    if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+    if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1);});
+  addEventListener('resize',fit);fit();show(i);
+})();
+</script>
+</body>
+</html>
